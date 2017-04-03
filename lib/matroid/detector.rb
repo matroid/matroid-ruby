@@ -93,6 +93,7 @@ module Matroid
 
     # @return Hash of detector info
     def info
+      update
       {
         'id' => @id,
         'name' => @name,
