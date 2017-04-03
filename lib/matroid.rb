@@ -3,6 +3,10 @@ require 'matroid/connection'
 require 'matroid/version'
 require 'matroid/detector'
 module Matroid
+  @client_id = ENV['MATROID_CLIENT_ID']
+  @client_secret = ENV['MATROID_CLIENT_SECRET']
+
+  puts @client_id, @client_secret
   class << self
 
     # Authenticates access for Matroid API
@@ -13,15 +17,13 @@ module Matroid
     # @return [Boolean] If the the access token is successfully created.
     def authenticate(client_id = nil, client_secret = nil)
       return true unless @token.nil? || @token.expired?
-      if client_id and client_secret
+      if client_id && client_secret
         raise BAD_CLIENT_VARIABLES_ERR if get_token(client_id, client_secret).nil?
         @client_id, @client_secret = client_id, client_secret
-      elsif (@client_id.nil? || @client_secret.nil?) and !environment_variables?
+      elsif (@client_id.nil? || @client_secret.nil?) && !environment_variables?
         raise NO_ENV_VARIABLES_ERR
       else
-        client_id, client_secret = ENV['MATROID_CLIENT_ID'], ENV['MATROID_CLIENT_SECRET']
-        raise BAD_ENV_VARIABLES_ERR if get_token(client_id, client_secret).nil?
-        @client_id, @client_secret = client_id, client_secret
+        raise BAD_ENV_VARIABLES_ERR if get_token(@client_id, @client_secret).nil?
       end
 
       true

@@ -76,7 +76,7 @@ module Matroid
     end
 
     def environment_variables?
-      ENV['MATROID_CLIENT_ID'] || ENV['MATROID_CLIENT_SECRET']
+      !ENV['MATROID_CLIENT_ID'].nil? && !ENV['MATROID_CLIENT_SECRET'].nil?
     end
 
   end
