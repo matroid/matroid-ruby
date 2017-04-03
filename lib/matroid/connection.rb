@@ -46,7 +46,7 @@ module Matroid
       url_split = url.split('?')
       url =  url_split[0]
       query = url_split[1..-1].join
-      url = URI::encode(url)
+      url = URI.escape(url)
       url << "?#{query}" if query
 
       # refreshes token with each call
