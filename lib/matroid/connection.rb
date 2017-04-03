@@ -19,76 +19,10 @@ module Matroid
   class << self
     attr_reader :token
 
-    # Authenticates access for Matroid API
-    # @example
-    #  Matroid.authenticate("<your_client_id>", "<your_client_secret>")
-    # @param client_id [String]
-    # @param client_secret [String]
-    # @return [Boolean] If the the access token is successfully created.
-    def authenticate(client_id = nil, client_secret = nil)
-      return true unless @token.nil? or @token.expired?
-      if client_id and client_secret
-        raise BAD_CLIENT_VARIABLES_ERR if get_token(client_id, client_secret).nil?
-        @client_id, @client_secret = client_id, client_secret
-      elsif (@client_id.nil? or @client_secret.nil?) and !environment_variables?
-        raise NO_ENV_VARIABLES_ERR
-      else
-        client_id, client_secret = ENV['MATROID_CLIENT_ID'], ENV['MATROID_CLIENT_SECRET']
-        raise BAD_ENV_VARIABLES_ERR if get_token(client_id, client_secret).nil?
-        @client_id, @client_secret = client_id, client_secret
-      end
-
-      true
-    end
-
-    # Retrieves the authenticated user's account information
-    # @return The account info as a parsed JSON
-    # @example
-    #   {
-    #     "account" => {
-    #       "credits" => {
-    #         "concurrentTrainLimit" =>1,
-    #         "held" => 3496,
-    #         "plan" => "premium",
-    #         "daily" => {
-    #           "used" => 36842,
-    #           "available" => 100000
-    #         },
-    #         "monthly" => {
-    #           "used" => 36842,
-    #           "available" => 1000000
-    #         }
-    #       }
-    #     }
-    #   }
-    def account_info
-      get('/account')
-    end
-
     VERBS.each do |verb|
       define_method verb do |endpoint, *params|
         send_request(verb, endpoint, *params)
       end
-    end
-
-    # Calls ::show on the current token (if it exists).
-    def show_token
-      if @token
-        @token.show
-      end
-    end
-
-    # Retrieves video classification data. Requires a video_id from
-    # {Detector#classify_video_file} or {Detector#classify_video_url}
-    # format 'json'/'csv'
-    # @note A "video_id" is needed to get the classification results
-    # @example
-    #   <Detector >.get_video_results(video_id: "23498503uf0dd09", threshold: 30, format: 'json')
-    # @param video_id [String]
-    # @param threshold [Numeric, nil]
-    # @param
-    def get_video_results(video_id, *args)
-      get("/videos/#{video_id}", *args)
     end
 
     private
