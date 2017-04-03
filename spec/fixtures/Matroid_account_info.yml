@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://www.matroid.com/api/0.1/account
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      accept:
+      - '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - Bearer bf8014ab65f662ba69f3dfd056e90d06
+      user-agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.10.1
+      date:
+      - Thu, 30 Mar 2017 07:39:13 GMT
+      content-type:
+      - application/json; charset=utf-8
+      content-length:
+      - '166'
+      connection:
+      - keep-alive
+      x-powered-by:
+      - Express
+      x-frame-options:
+      - sameorigin
+      content-security-policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      etag:
+      - W/"a6-g3D9OWhn58PrnAQybEcGNFLbFx0"
+      set-cookie:
+      - keystone.sid=s%3AA0l4QG_LHt5_7YXSdrkT-xiQwGIxR2fr.w1haZC%2FuhU4hPkYNw1iltJSUpFeExvPVk07xACcUn4s;
+        Path=/; HttpOnly
+      vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '{"account":{"credits":{"plan":"premium","daily":{"used":36837,"available":100000},"monthly":{"used":36837,"available":1000000},"held":3496,"concurrentTrainLimit":1}}}'
+    http_version: '1.1'
+  recorded_at: Thu, 30 Mar 2017 07:44:53 GMT
+recorded_with: VCR 3.0.3

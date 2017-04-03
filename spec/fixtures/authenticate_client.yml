@@ -1,0 +1,63 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.matroid.com/api/0.1/oauth/token
+    body:
+      encoding: US-ASCII
+      string: client_id=c7RqWJs9MopTAN0Y&client_secret=55JxPSgh395wRW1IIX1PDLDBeVlUZytI&grant_type=client_credentials
+    headers:
+      accept:
+      - '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '103'
+      content-type:
+      - application/x-www-form-urlencoded
+      user-agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.10.1
+      date:
+      - Thu, 30 Mar 2017 07:39:13 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      x-powered-by:
+      - Express
+      vary:
+      - X-HTTP-Method-Override, Accept-Encoding
+      x-frame-options:
+      - sameorigin
+      content-security-policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      cache-control:
+      - no-store
+      pragma:
+      - no-cache
+      set-cookie:
+      - keystone.sid=s%3AImODhFZ44lCDvF1GBuPsNpbIDOxOefmu.FJfehKNOi5to4YRS53LoMCsGrJBTN2QW4dq2zCGC0hQ;
+        Path=/; HttpOnly
+      content-encoding:
+      - gzip
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAAyWMSwqAIBBA7zJrF9PHIVt2ERl1BAlKtEUR3T2p9fvcwN5L
+        rfbYV9lgBhcn7EZ2pCNR75hMHEIMqEkMBiRQIGdORapNze8IjYLq9ywt5pzs
+        /2vad7TH9ZFFuEiB5wUffgZqcAAAAA==
+    http_version: '1.1'
+  recorded_at: Thu, 30 Mar 2017 07:44:53 GMT
+recorded_with: VCR 3.0.3
