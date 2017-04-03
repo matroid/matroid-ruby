@@ -3,7 +3,7 @@ require 'json'
 require 'restclient'
 require 'date'
 
-BASE_API_URI       = 'https://matroid.com/api/0.1'
+BASE_API_URI       = 'https://www.matroid.com/api/0.1'
 DEFAULT_GRANT_TYPE = 'client_credentials'
 TOKEN_RESOURCE     = '/oauth/token'
 VERBS              = %w(get post)
