@@ -12,11 +12,11 @@ module Matroid
     # @param client_secret [String]
     # @return [Boolean] If the the access token is successfully created.
     def authenticate(client_id = nil, client_secret = nil)
-      return true unless @token.nil? or @token.expired?
+      return true unless @token.nil? || @token.expired?
       if client_id and client_secret
         raise BAD_CLIENT_VARIABLES_ERR if get_token(client_id, client_secret).nil?
         @client_id, @client_secret = client_id, client_secret
-      elsif (@client_id.nil? or @client_secret.nil?) and !environment_variables?
+      elsif (@client_id.nil? || @client_secret.nil?) and !environment_variables?
         raise NO_ENV_VARIABLES_ERR
       else
         client_id, client_secret = ENV['MATROID_CLIENT_ID'], ENV['MATROID_CLIENT_SECRET']
