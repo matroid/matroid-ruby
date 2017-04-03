@@ -43,7 +43,9 @@ module Matroid
 
     def send_request(verb, path, *params)
       url = path.start_with?('http') ? path : BASE_API_URI + path
-      url, query = *url.split('?')
+      url_split = url.split('?')
+      url =  url_split[0]
+      query = url_split[1..-1].join
       url = URI::encode(url)
       url << "?#{query}" if query
 
@@ -87,7 +89,7 @@ module Matroid
   # @attr [DateTime] born           When the token was created
   # @attr [String]   lifetime       Seconds until token expired
   class Token
-    attr_reader :born, :lifetime
+    attr_reader :born, :lifetime, :acces_token
     def initialize(options = {})
       @token_type = options['token_type']
       @access_token = options['access_token']
@@ -114,12 +116,12 @@ module Matroid
       remaining > 0 ? remaining * 24.0 * 60 * 60  : 0
     end
 
-    def show
-      {
+    def to_s
+      JSON.pretty_generate({
         access_token: @access_token,
         born: @born,
         lifetime: @lifetime
-      }
+      })
     end
   end
 end

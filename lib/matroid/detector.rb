@@ -10,7 +10,7 @@ ZIP_FILE_SIZE_LIMIT   = 300 * 1024 * 1024
 module Matroid
 
 
-  # Represents a matroid detector
+  # Represents a Matroid detector
   # @attr [String]          id                Detector id
   # @attr [String]          name              Detector name
   # @attr [Array<String>]   labels

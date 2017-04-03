@@ -6,7 +6,6 @@ module Matroid
   @client_id = ENV['MATROID_CLIENT_ID']
   @client_secret = ENV['MATROID_CLIENT_SECRET']
 
-  puts @client_id, @client_secret
   class << self
 
     # Authenticates access for Matroid API
