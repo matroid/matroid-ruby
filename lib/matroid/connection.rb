@@ -8,11 +8,6 @@ DEFAULT_GRANT_TYPE = 'client_credentials'
 TOKEN_RESOURCE     = '/oauth/token'
 VERBS              = %w(get post)
 
-# error messages
-NO_ENV_VARIABLES_ERR     = 'AuthenticationError: "MATROID_CLIENT_ID" and "MATROID_CLIENT_SECRET" not found in environment'
-BAD_ENV_VARIABLES_ERR    = 'AuthenticationError: problem using environment variables "MATROID_CLIENT_ID" and "MATROID_CLIENT_SECRET"'
-BAD_CLIENT_VARIABLES_ERR = 'AuthenticationError: problem using client variables provided'
-
 module Matroid
 
   # @attr_reader [Token] The current stored token object
@@ -33,7 +28,7 @@ module Matroid
       begin
         response = RestClient.post(url, params)
       rescue RestClient::ExceptionWithResponse => e
-        puts JSON.pretty_generate(JSON.parse(e.response))
+        puts parse_or_show_response(e.response)
         @token = nil
         return false
       end
@@ -63,10 +58,32 @@ module Matroid
           response = RestClient.post(url, *params)
         end
       rescue RestClient::ExceptionWithResponse => e
-        raise JSON.pretty_generate(JSON.parse(e.response))
+        parse_or_show_response(e.response)
       end
 
       JSON.parse(response)
+    end
+
+    def parse_or_show_response(response)
+      if valid_json?(response)
+        err_msg = JSON.pretty_generate(JSON.parse(response))
+        http_code = response.http_code
+        raise Error::RateLimitError.new(err_msg) if http_code == 429
+        raise Error::PaymentError.new(err_msg) if http_code == 402
+        raise Error::ServerError.new(err_msg) if http_code / 100 == 5
+        raise Error::APIError.new(err_msg)
+      else
+        raise Error::APIError.new(response)
+      end
+    end
+
+    def valid_json?(json)
+      begin
+        JSON.parse(json)
+        return true
+      rescue JSON::ParserError => e
+        return false
+      end
     end
 
     def auth_params(client_id, client_secret)

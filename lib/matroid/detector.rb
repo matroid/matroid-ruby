@@ -1,7 +1,3 @@
-# error messages
-DETECTOR_DOES_NOT_EXITS_ERR = "Error: Couldn't find detector"
-DETECTOR_NOT_TRAINED_ERR = "Error: This detector has incomplete training."
-
 # size limit constants
 IMAGE_FILE_SIZE_LIMIT = 50 * 1024 * 1024
 VIDEO_FILE_SIZE_LIMIT = 300 * 1024 * 1024
@@ -37,7 +33,8 @@ module Matroid
       detector = @@detectors[detector_id]
 
       # should already raise error before this
-      raise DETECTOR_DOES_NOT_EXITS_ERR if detector.nil?
+      err_msg = "Couldn't find detector"
+      raise Error::InvalidQueryError.new(err_msg) if detector.nil?
       get_or_make_detector(detector)
     end
 
@@ -68,7 +65,8 @@ module Matroid
       when File
         file = zip_file
       else
-        raise 'first argument must be a zip file of the image folders, or a string of the path to the file'
+        err_msg = 'First argument must be a zip file of the image folders, or a string of the path to the file'
+        raise Error::InvalidQueryError.new(err_msg)
       end
       params = {
         file: file,
@@ -110,7 +108,7 @@ module Matroid
     # @note
     #   Fails if detector is not qualified to be trained.
     def train
-      raise DETECTOR_NOT_TRAINED_ERR unless is_trained?
+      raise Error::APIError.new('This detector has incomplete training.') unless is_trained?
       response = Matroid.post("/detectors/#{@id}/finalize")
       response['detector']
     end
@@ -186,8 +184,8 @@ module Matroid
     #     det.classify_image_file "https://www.allaboutbirds.org/guide/PHOTO/LARGE/common_tern_donnalynn.jpg"
     #     ### return results are the same as {#classify_image_url }
     def classify_image_file(file_path)
-      size_err = "Error: Individual file size must be under #{IMAGE_FILE_SIZE_LIMIT / 1024 / 1024}MB"
-      raise size_err if File.size(file_path) > IMAGE_FILE_SIZE_LIMIT
+      size_err = "Individual file size must be under #{IMAGE_FILE_SIZE_LIMIT / 1024 / 1024}MB"
+      raise Error::InvalidQueryError.new(size_err) if File.size(file_path) > IMAGE_FILE_SIZE_LIMIT
       classify('image', file: File.new(file_path, 'rb'))
     end
 
@@ -212,16 +210,16 @@ module Matroid
     # @param file_path [String] Path to file
     # @return Hash containing the registered video's id ex: { "video_id" => "58489472ff22bb2d3f95728c" }. Needed for Matroid.get_video_results(video_id)
     def classify_video_file(file_path)
-      size_err = "Error: Video file size must be under #{VIDEO_FILE_SIZE_LIMIT / 1024 / 1024}MB"
-      raise size_err if File.size(file_path) > VIDEO_FILE_SIZE_LIMIT
+      size_err = "Video file size must be under #{VIDEO_FILE_SIZE_LIMIT / 1024 / 1024}MB"
+      raise Error::InvalidQueryError.new(size_err) if File.size(file_path) > VIDEO_FILE_SIZE_LIMIT
       classify('video', file: File.new(file_path, 'rb'))
     end
 
     private
 
     def classify(type, params)
-      not_trained_err = "Error: This detector's training is not complete."
-      raise not_trained_err unless is_trained?
+      not_trained_err = "This detector's training is not complete."
+      raise Error::InvalidQueryError.new(not_trained_err) unless is_trained?
       Matroid.post("/detectors/#{@id}/classify_#{type}", params)
     end
 

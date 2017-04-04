@@ -2,6 +2,8 @@ require 'dotenv/load'
 require 'matroid/connection'
 require 'matroid/version'
 require 'matroid/detector'
+require 'matroid/error'
+
 module Matroid
   @client_id = ENV['MATROID_CLIENT_ID']
   @client_secret = ENV['MATROID_CLIENT_SECRET']
@@ -17,12 +19,15 @@ module Matroid
     def authenticate(client_id = nil, client_secret = nil)
       return true unless @token.nil? || @token.expired?
       if client_id && client_secret
-        raise BAD_CLIENT_VARIABLES_ERR if get_token(client_id, client_secret).nil?
+        err_msg = 'problem using environment variables "MATROID_CLIENT_ID" and "MATROID_CLIENT_SECRET"'
+        raise Error::AuthorizationError.new(err_msg) if get_token(client_id, client_secret).nil?
         @client_id, @client_secret = client_id, client_secret
       elsif (@client_id.nil? || @client_secret.nil?) && !environment_variables?
-        raise NO_ENV_VARIABLES_ERR
+        err_msg = '"MATROID_CLIENT_ID" and "MATROID_CLIENT_SECRET" not found in environment'
+        raise Error::AuthorizationError.new(err_msg)
       else
-        raise BAD_ENV_VARIABLES_ERR if get_token(@client_id, @client_secret).nil?
+        err_msg = 'Problem using client variables provided'
+        raise Error::AuthorizationError.new(err_msg) if get_token(@client_id, @client_secret).nil?
       end
 
       true
