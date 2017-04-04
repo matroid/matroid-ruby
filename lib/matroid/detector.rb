@@ -38,6 +38,53 @@ module Matroid
       get_or_make_detector(detector)
     end
 
+    # Looks up the detector by matching fields.
+    # :label and :name accept a string or regular expression.
+    # @example
+    #   Matroid::Detector.find(label: 'cat', state: 'trained')
+    # @example
+    #   Matroid::Detector.find(name: /cat/)
+    # @example
+    #   Matroid::Detector.find(label: 'puppy').first.id
+    # @note The detector must either be published or created by the current authenticated user.
+    # @return [Array<Detector>] Returns the detector instances that match the query.
+    def self.find(args)
+      raise Error::InvalidQueryError.new('Argument must be a hash.') unless args.class == Hash
+      refresh
+      matches = @@detector_ids.inject([]) do |arr, id|
+        det = self.detector_json_from_id(id)
+        not_match = args.keys.any? do |key|
+          val = args[key]
+          case key.to_s
+          when 'label'
+            case val
+            when String
+              !det['labels'].include?(val)
+            when Regexp
+              !det['labels'].any?{ |w| w.match(val) }
+            else
+              raise Error::InvalidQueryError.new('The value for the key :label must be a String or Regexp.')
+            end
+          when 'name'
+            case val
+            when String
+              !det['name'] == val
+            when Regexp
+              !det['name'].match(val)
+            else
+              raise Error::InvalidQueryError.new('The value for the key :name must be a String or Regexp.')
+            end
+          else
+            det[key] != args[key]
+          end
+        end
+
+        not_match ? arr : arr << get_or_make_detector(det)
+      end
+
+      matches
+    end
+
     # @return [Array] List of detectors as hashes.
     def self.list
       refresh
@@ -243,8 +290,9 @@ module Matroid
         return obj
       when Hash
         # raw detector info
+        id = obj['id']
+        return @@detectors[id] if id &&  @@detectors[id].class == Detector
         detector = Detector.new(obj)
-        id = detector.id
         @@detectors[id] = detector
         return detector
       when String
@@ -281,6 +329,15 @@ module Matroid
       end
     end
 
+    def self.detector_json_from_id(id)
+      case  @@detectors[id]
+      when Detector
+        @@detectors[id].info
+      else
+        @@detectors[id]
+      end
+    end
+
     def update_params(params)
        @id = params['detector_id'] if params['detector_id']
        @name = params['human_name'] if params['human_name']
@@ -298,15 +355,6 @@ module Matroid
        @training = params['training'] if params['training']
        @state = params['state'] if params['state']
        nil
-    end
-
-    def detector_json_from_id(id)
-      case  @@detectors[id]
-      when Detector
-        @@detectors[id].info
-      else
-        @@detectors[id]
-      end
     end
   end
 end
