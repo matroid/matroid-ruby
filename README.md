@@ -53,6 +53,13 @@ Matroid.account_info
 # Get detector by id
 detector = Matroid::Detector.find_by_id('5893f98530c1c00d0063835b')
 
+# Get detectors by query
+# search by one or more of :labels, :name, :state, :id, :permission_level, :owner, :detector_type
+# :labels and :name queries can be String or Regexp
+detector = Matroid::Detector.find(id: '5893f98530c1c00d0063835b').first
+cat_detectors = Matroid::Detector.find(name: /cat/)
+cat_detector_id = Matroid::Detector.find(labels: /cat/, owner: true, state: trained).first.id
+
 # Get detector details
 detector.info #=> Hash of all the details (or you can get them separately as below)
 detector.id #=> "5893f98530c1c00d0063835b"
