@@ -3,92 +3,89 @@ IMAGE_FILE_SIZE_LIMIT = 50 * 1024 * 1024
 VIDEO_FILE_SIZE_LIMIT = 300 * 1024 * 1024
 BATCH_FILE_SIZE_LIMIT = 50 * 1024 * 1024
 ZIP_FILE_SIZE_LIMIT   = 300 * 1024 * 1024
+SEARCH_PARAMETERS     = %w(id name label permission_level owner training type state)
 module Matroid
 
 
   # Represents a Matroid detector
   # @attr [String]          id                Detector id
   # @attr [String]          name              Detector name
-  # @attr [Array<String>]   labels
+  # @attr [Array<Hash><String>]   labels
   # @attr [String]          permission_level  'private', 'readonly', 'open', 'stock'
   # @attr [Bool]            owner             is the current authicated user the owner
   class Detector
     # HASH { <id> => Detector }
-    @@detectors = {}
-    @@detector_ids = []
+    @@instances = {}
+    @@ids = []
 
-    attr_reader :id, :name, :labels, :permission_level, :owner, :training,
-                :detector_type, :state
-
-    # Looks up the detector by id
-    # @note The detector must either be published or created by the current authenticated user.
-    # @param detector_id [String]
-    # @return [Detector] Returns the detector instance.
-    def self.find_by_id(detector_id)
-      # update list if not in the list
-      refresh if @@detectors[detector_id].nil?
-
-      # if it's pending and not registered
-      fetch(detector_id) if @@detectors[detector_id].nil?
-      detector = @@detectors[detector_id]
-
-      # should already raise error before this
-      err_msg = "Couldn't find detector"
-      raise Error::InvalidQueryError.new(err_msg) if detector.nil?
-      get_or_make_detector(detector)
-    end
+    attr_reader :name, :labels, :label_ids, :permission_level, :owner, :training,
+                :type, :state
 
     # Looks up the detector by matching fields.
-    # :label and :name accept a string or regular expression.
+    # :label and :name get matched according the the regular expression /\b(<word>)/i
     # @example
     #   Matroid::Detector.find(label: 'cat', state: 'trained')
     # @example
-    #   Matroid::Detector.find(name: /cat/)
+    #   Matroid::Detector.find(name: 'cat')
+    # @example
+    #   Matroid::Detector.find(name: 'cat', published: true)
     # @example
     #   Matroid::Detector.find(label: 'puppy').first.id
-    # @note The detector must either be published or created by the current authenticated user.
-    # @return [Array<Detector>] Returns the detector instances that match the query.
+    # @note The detector must either be created by the current authenticated user or published for general use.
+    # @return [Array<Hash><Detector>] Returns the detector instances that match the query.
     def self.find(args)
       raise Error::InvalidQueryError.new('Argument must be a hash.') unless args.class == Hash
-      refresh
-      matches = @@detector_ids.inject([]) do |arr, id|
-        det = self.detector_json_from_id(id)
-        not_match = args.keys.any? do |key|
-          val = args[key]
-          case key.to_s
-          when 'label'
-            case val
-            when String
-              !det['labels'].include?(val)
-            when Regexp
-              !det['labels'].any?{ |w| w.match(val) }
-            else
-              raise Error::InvalidQueryError.new('The value for the key :label must be a String or Regexp.')
-            end
-          when 'name'
-            case val
-            when String
-              !det['name'] == val
-            when Regexp
-              !det['name'].match(val)
-            else
-              raise Error::InvalidQueryError.new('The value for the key :name must be a String or Regexp.')
-            end
-          else
-            det[key] != args[key]
-          end
-        end
-
-        not_match ? arr : arr << get_or_make_detector(det)
-      end
-
-      matches
+      query = args.keys.map{|key| key.to_s + '=' + args[key].to_s }.join('&')
+      detectors = Matroid.get('/detectors/search?' + query)
+      detectors.map{|params| register(params) }
     end
 
-    # @return [Array] List of detectors as hashes.
-    def self.list
-      refresh
-      @@detector_ids.inject([]){ |arr, id| arr << @@detectors[id] }
+    # Chooses first occurence of the results from {#find}
+    def self.find_one(args)
+      args['limit'] = 1
+      find(args).first
+    end
+
+    # Finds a single document based on the id
+    def self.find_by_id(id, args = nil)
+      detector = @@instances[id]
+      is_trained =  detector.class == Detector && detector.state == 'trained'
+      return detector if is_trained
+
+      args[:id] = id
+      find_one(args)
+    end
+
+    SEARCH_PARAMETERS.each do |param|
+      # Search for detectors using the "find_one_by_" method prefix
+      define_singleton_method "find_one_by_#{param}" do |arg, opts = {}|
+        opts[param.to_sym] = arg
+        find_one(opts)
+      end
+
+      # Search for detectors using the "find_by_" method prefix
+      define_singleton_method "find_by_#{param}" do |arg, opts = {}|
+        opts[param.to_sym] = arg
+        find(opts)
+      end
+    end
+
+    #  List of detectors that have been returned by search requests as hashes or Detector instances.
+    # @param type [String] Indicate how you want the response
+    # @return [Array<Hash, Detector>]
+    def self.list(format = 'instance')
+      case type
+      when 'hash'
+        @@ids.map{|id| find_by_id(id).to_hash }
+      when 'instance'
+        @@ids.map{|id| find_by_id(id) }
+      end
+    end
+
+    # Removes all cached detector instances
+    def self.reset
+      @@instances = {}
+      @@ids = []
     end
 
     # Creates a new detector with the contents of a zip file.
@@ -122,40 +119,31 @@ module Matroid
       }
       response = Matroid.post('/detectors', params)
       id = response['detector_id']
-      params = {
-        'detector_id' => id,
-        'human_name' => name,
-        'owner' => true
-      }
-      register_detector(params)
-      detector = find_by_id(id)
-      detector.update
+      find_by_id(id)
     end
 
     def initialize(params)
       update_params(params)
     end
 
-    # @return Hash of detector info
+    # Detector attributes in a nicely printed format for viewing
     def info
-      update
-      {
-        'id' => @id,
-        'name' => @name,
-        'labels' => @labels,
-        'permission_level' => @permission_level,
-        'owner' => @owner,
-        'training' => @training,
-        'detector_type' => @detector_type,
-        'state' => @state
-      }
+      puts JSON.pretty_generate(to_hash)
+    end
+
+    # Detector attributes as a hash
+    # @return [Hash]
+    def to_hash
+      instance_variables.each_with_object(Hash.new(0)) do |element, hash|
+        hash["#{element}".delete("@").to_sym] = instance_variable_get(element)
+      end
     end
 
     # Submits detector instance for training
     # @note
     #   Fails if detector is not qualified to be trained.
     def train
-      raise Error::APIError.new('This detector has incomplete training.') unless is_trained?
+      raise Error::APIError.new("This detector is already trained.") if is_trained?
       response = Matroid.post("/detectors/#{@id}/finalize")
       response['detector']
     end
@@ -168,7 +156,7 @@ module Matroid
     # Updates the the detector data. Used when training to see the detector training progress.
     # @return [Detector]
     def update
-      self.class.fetch(@id)
+      self.class.find_by_id(@id)
     end
 
     # Submits an image file via url to be classified with the detector
@@ -225,26 +213,25 @@ module Matroid
 
     # Submits an image file via url to be classified with the detector
     # @param url [String] Url for image file
-    # @return Hash containing the classification data.
+    # @return Hash containing the classification data see {#classify_image_url }
     # @example
     #     det = Matroid::Detector.find_by_id "5893f98530c1c00d0063835b"
-    #     det.classify_image_file "https://www.allaboutbirds.org/guide/PHOTO/LARGE/common_tern_donnalynn.jpg"
-    #     ### return results are the same as {#classify_image_url }
+    #     det.classify_image_file "path/to/file.jpg"
     def classify_image_file(file_path)
       size_err = "Individual file size must be under #{IMAGE_FILE_SIZE_LIMIT / 1024 / 1024}MB"
       raise Error::InvalidQueryError.new(size_err) if File.size(file_path) > IMAGE_FILE_SIZE_LIMIT
       classify('image', file: File.new(file_path, 'rb'))
     end
 
-    # def classify_image_files(file_paths)
-    #   arg_err = "Error: Argument must be an array of image file paths"
-    #   size_err = "Error: Total batch size must be under #{BATCH_FILE_SIZE_LIMIT / 1024 / 1024}MB"
-    #   raise arg_err unless file_paths.is_a?(Array)
-    #   batch_size = file_paths.inject(0){ |sum, file| sum + File.size(file) }
-    #   raise err_msg unless batch_size < BATCH_FILE_SIZE_LIMIT
-    #   files = file_paths.map{ |file_path| [File.new(file_path, 'rb')] }
-    #   classify('image', files)
-    # end
+    def classify_image_files(file_paths)
+      arg_err = "Error: Argument must be an array of image file paths"
+      size_err = "Error: Total batch size must be under #{BATCH_FILE_SIZE_LIMIT / 1024 / 1024}MB"
+      raise arg_err unless file_paths.is_a?(Array)
+      batch_size = file_paths.inject(0){ |sum, file| sum + File.size(file) }
+      raise size_err unless batch_size < BATCH_FILE_SIZE_LIMIT
+      files = file_paths.map{ |file_path| [File.new(file_path, 'rb')] }
+      classify('image', files)
+    end
 
     # Submits a video file via url to be classified with the detector
     # @param url [String] Url for video file
@@ -270,88 +257,24 @@ module Matroid
       Matroid.post("/detectors/#{@id}/classify_#{type}", params)
     end
 
-    def self.get_trained_detectors
-      # assumes no detectors were deleted
-      Matroid.get '/detectors'
-    end
-
-    def self.fetch(id)
-      response = Matroid.get('/detectors/' + id)
-      params =  response['detector']
-      params['detector_id'] = id
-      register_detector(params)
-      get_or_make_detector(id)
-    end
-
-    def self.get_or_make_detector(obj)
-      case obj
-      when Detector
-        # already a detector
-        return obj
-      when Hash
-        # raw detector info
-        id = obj['id']
-        return @@detectors[id] if id &&  @@detectors[id].class == Detector
-        detector = Detector.new(obj)
-        @@detectors[id] = detector
-        return detector
-      when String
-        # assume this is an id
-        id = obj
-        return get_or_make_detector(@@detectors[id])
-      end
-
-      nil
-    end
-
-    def self.refresh
-      detectors = get_trained_detectors
-      detectors.each do |detector|
-        id = detector['detector_id']
-        if @@detectors[id].nil?
-          detector['training'] = 'successful'
-          detector['state'] = 'trained'
-          @@detectors[id] = detector
-          @@detector_ids.push(id)
-        end
-      end
-      nil
-    end
-
-    def self.register_detector(obj)
-      det_id = obj['detector_id'] || obj['id']
-      @@detector_ids.push(det_id) if @@detectors[det_id].nil?
-      case  @@detectors[det_id]
-      when Detector
-        @@detectors[det_id].update_params(obj)
+    def self.register(obj)
+      id = obj['id']
+      @@ids.push(id) if @@instances[id].nil?
+      if  @@instances[id].class == Detector
+        @@instances[id].update_params(obj)
       else
-        @@detectors[det_id] = obj
-      end
-    end
-
-    def self.detector_json_from_id(id)
-      case  @@detectors[id]
-      when Detector
-        @@detectors[id].info
-      else
-        @@detectors[id]
+        @@instances[id] = Detector.new(obj)
       end
     end
 
     def update_params(params)
-       @id = params['detector_id'] if params['detector_id']
-       @name = params['human_name'] if params['human_name']
-       @labels = params['labels'].map do |label|
-         case label
-         when String
-           label
-         when Hash
-           label['name']
-         end
-       end if params['labels'].is_a?(Array)
+       @id = params['id'] if params['id']
+       @name = params['name'] if params['name']
+       @labels = params['labels'] if params['labels']
+       @label_ids = params['label_ids'] if params['label_ids']
        @permission_level = params['permission_level'] if params['permission_level']
        @owner = params['owner'] if params['owner']
-       @detector_type = params['detector_type'] if params['detector_type']
+       @type = params['type'] if params['type']
        @training = params['training'] if params['training']
        @state = params['state'] if params['state']
        nil

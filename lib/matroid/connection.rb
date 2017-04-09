@@ -14,6 +14,14 @@ module Matroid
   class << self
     attr_reader :token
 
+    @base_api_uri = BASE_API_URI
+
+    # Changes the default base api uri. This is used primarily for testing purposes.
+    # @param uri [String]
+    def set_base_uri(uri)
+      @base_api_uri = uri
+    end
+
     VERBS.each do |verb|
       define_method verb do |endpoint, *params|
         send_request(verb, endpoint, *params)
@@ -58,22 +66,21 @@ module Matroid
           response = RestClient.post(url, *params)
         end
       rescue RestClient::ExceptionWithResponse => e
-        parse_or_show_response(e.response)
+        parse_or_show_response(e)
       end
-
       JSON.parse(response)
     end
 
-    def parse_or_show_response(response)
-      if valid_json?(response)
-        err_msg = JSON.pretty_generate(JSON.parse(response))
-        http_code = response.http_code
+    def parse_or_show_response(err)
+      if valid_json?(err.response)
+        http_code = err.http_code
+        err_msg = JSON.pretty_generate(JSON.parse(err.response))
         raise Error::RateLimitError.new(err_msg) if http_code == 429
         raise Error::PaymentError.new(err_msg) if http_code == 402
         raise Error::ServerError.new(err_msg) if http_code / 100 == 5
         raise Error::APIError.new(err_msg)
       else
-        raise Error::APIError.new(response)
+        raise Error::APIError.new(err.response)
       end
     end
 
