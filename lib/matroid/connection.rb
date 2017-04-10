@@ -124,16 +124,20 @@ module Matroid
     # Checks if the current token is expired
     # @return [Boolean]
     def expired?
-      lifetime_in_days = @lifetime / 24.0 / 60 / 60
+      lifetime_in_days = time_in_seconds(@lifetime)
       @born + lifetime_in_days < DateTime.now
     end
 
 
     # @return [Numeric] Time left before token expires (in seconds).
     def time_remaining
-      lifetime_in_days = @lifetime / 24.0 / 60 / 60
+      lifetime_in_days = time_in_seconds(@lifetime)
       remaining = lifetime_in_days - (DateTime.now - @born)
-      remaining > 0 ? remaining * 24.0 * 60 * 60  : 0
+      remaining > 0 ? time_in_seconds(remaining) : 0
+    end
+
+    def time_in_seconds(t)
+      t * 24.0 * 60 * 60
     end
 
     def to_s
