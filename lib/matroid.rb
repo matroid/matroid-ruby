@@ -61,7 +61,7 @@ module Matroid
     #     }
     #   }
     def account_info
-      get('/account')
+      get('account')
     end
 
     # Retrieves video classification data. Requires a video_id from
@@ -74,7 +74,7 @@ module Matroid
     # @param threshold [Numeric, nil]
     # @param
     def get_video_results(video_id, *args)
-      get("/videos/#{video_id}", *args)
+      get("videos/#{video_id}", *args)
     end
 
   end

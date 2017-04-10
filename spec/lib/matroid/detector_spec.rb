@@ -23,7 +23,7 @@ describe Matroid::Detector do
       expect(detector.name)                     .to eq 'cat-64'
       expect(detector.labels)                   .to include 'cat'
       expect(detector.permission)               .to eq 'open'
-      expect(detector.is_owner)                 .to eq true
+      expect(detector.owner)                    .to eq true
     end
   end
 

@@ -3,7 +3,7 @@ IMAGE_FILE_SIZE_LIMIT = 50 * 1024 * 1024
 VIDEO_FILE_SIZE_LIMIT = 300 * 1024 * 1024
 BATCH_FILE_SIZE_LIMIT = 50 * 1024 * 1024
 ZIP_FILE_SIZE_LIMIT   = 300 * 1024 * 1024
-SEARCH_PARAMETERS     = %w(id name label permission_level owner training type state)
+SEARCH_PARAMETERS     = %w(name label permission_level owner training type state)
 module Matroid
 
 
@@ -18,7 +18,7 @@ module Matroid
     @@instances = {}
     @@ids = []
 
-    attr_reader :name, :labels, :label_ids, :permission_level, :owner, :training,
+    attr_reader :id, :name, :labels, :label_ids, :permission_level, :owner, :training,
                 :type, :state
 
     # Looks up the detector by matching fields.
@@ -36,7 +36,7 @@ module Matroid
     def self.find(args)
       raise Error::InvalidQueryError.new('Argument must be a hash.') unless args.class == Hash
       query = args.keys.map{|key| key.to_s + '=' + args[key].to_s }.join('&')
-      detectors = Matroid.get('/detectors/search?' + query)
+      detectors = Matroid.get('detectors/search?' + query)
       detectors.map{|params| register(params) }
     end
 
@@ -47,13 +47,13 @@ module Matroid
     end
 
     # Finds a single document based on the id
-    def self.find_by_id(id, args = nil)
+    def self.find_by_id(id, args = {})
       detector = @@instances[id]
       is_trained =  detector.class == Detector && detector.state == 'trained'
       return detector if is_trained
 
       args[:id] = id
-      find_one(args)
+      find_one(id: id)
     end
 
     SEARCH_PARAMETERS.each do |param|
@@ -117,7 +117,7 @@ module Matroid
         name: name,
         detector_type: detector_type
       }
-      response = Matroid.post('/detectors', params)
+      response = Matroid.post('detectors', params)
       id = response['detector_id']
       find_by_id(id)
     end
@@ -144,7 +144,7 @@ module Matroid
     #   Fails if detector is not qualified to be trained.
     def train
       raise Error::APIError.new("This detector is already trained.") if is_trained?
-      response = Matroid.post("/detectors/#{@id}/finalize")
+      response = Matroid.post("detectors/#{@id}/finalize")
       response['detector']
     end
 
@@ -223,19 +223,27 @@ module Matroid
       classify('image', file: File.new(file_path, 'rb'))
     end
 
+    # The plural of {#classify_image_file}
+    # @param file_paths [Array<String>] An array of images in the form of paths from the current directory
+    # @return Hash containing the classification data
     def classify_image_files(file_paths)
       arg_err = "Error: Argument must be an array of image file paths"
       size_err = "Error: Total batch size must be under #{BATCH_FILE_SIZE_LIMIT / 1024 / 1024}MB"
       raise arg_err unless file_paths.is_a?(Array)
       batch_size = file_paths.inject(0){ |sum, file| sum + File.size(file) }
       raise size_err unless batch_size < BATCH_FILE_SIZE_LIMIT
-      files = file_paths.map{ |file_path| [File.new(file_path, 'rb')] }
-      classify('image', files)
+      files = file_paths.map{ |file_path| ['file', File.new(file_path, 'rb')] }
+
+      url = "#{Matroid.base_api_uri}detectors/#{@id}/classify_image"
+
+      client = HTTPClient.new
+      client.post(url, body: files, header: {'Authorization' => Matroid.token.authorization_header}).body
+      # Matroid.post("detectors/#{@id}/classify_image", files) # responds with 'request entity too large' for some reason
     end
 
     # Submits a video file via url to be classified with the detector
     # @param url [String] Url for video file
-    # @return Hash containing the registered video's id ex: { "video_id" => "58489472ff22bb2d3f95728c" }. Needed for Matroid.get_video_results(video_id)
+    # @return Hash containing the registered video's id; ex: { "video_id" => "58489472ff22bb2d3f95728c" }. Needed for Matroid.get_video_results(video_id)
     def classify_video_url(url)
       classify('video', url: url)
     end
@@ -249,12 +257,25 @@ module Matroid
       classify('video', file: File.new(file_path, 'rb'))
     end
 
+    def update_params(params)
+      @id = params['id'] if params['id']
+      @name = params['name'] if params['name']
+      @labels = params['labels'] if params['labels']
+      @label_ids = params['label_ids'] if params['label_ids']
+      @permission_level = params['permission_level'] if params['permission_level']
+      @owner = params['owner'] if params['owner']
+      @type = params['type'] if params['type']
+      @training = params['training'] if params['training']
+      @state = params['state'] if params['state']
+      nil
+    end
+
     private
 
     def classify(type, params)
       not_trained_err = "This detector's training is not complete."
       raise Error::InvalidQueryError.new(not_trained_err) unless is_trained?
-      Matroid.post("/detectors/#{@id}/classify_#{type}", params)
+      Matroid.post("detectors/#{@id}/classify_#{type}", params)
     end
 
     def self.register(obj)
@@ -267,17 +288,5 @@ module Matroid
       end
     end
 
-    def update_params(params)
-       @id = params['id'] if params['id']
-       @name = params['name'] if params['name']
-       @labels = params['labels'] if params['labels']
-       @label_ids = params['label_ids'] if params['label_ids']
-       @permission_level = params['permission_level'] if params['permission_level']
-       @owner = params['owner'] if params['owner']
-       @type = params['type'] if params['type']
-       @training = params['training'] if params['training']
-       @state = params['state'] if params['state']
-       nil
-    end
   end
 end

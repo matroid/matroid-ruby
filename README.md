@@ -56,12 +56,25 @@ detector = Matroid::Detector.find_by_id('5893f98530c1c00d0063835b')
 # Get detectors by query
 # search by one or more of :labels, :name, :state, :id, :permission_level, :owner, :detector_type
 # :labels and :name queries can be String or Regexp
+# find user detectors
 detector = Matroid::Detector.find(id: '5893f98530c1c00d0063835b').first
-cat_detectors = Matroid::Detector.find(name: /cat/)
-cat_detector_id = Matroid::Detector.find(labels: /cat/, owner: true, state: trained).first.id
+cat_detectors = Matroid::Detector.find(name: 'cat')
+cat_detector_id = Matroid::Detector.find(labels: 'cat', owner: true, state: 'trained').first.id
+
+# find published detectors
+cat_detectors = Matroid::Detector.find(name: 'cat', published: true)
+cat_detector_id = Matroid::Detector.find(labels: 'cat', state: 'trained', published: true).first.id
+
+# convenience methods
+#  .find_by_id(String)
+#  .find_one(Hash)
+#  .find_by_<attribute>(String)
+#  .find_one_by_<attribute>(String)
 
 # Get detector details
-detector.info #=> Hash of all the details (or you can get them separately as below)
+detector.to_hash #=> Hash of all the details (or you can get them separately as below)
+detector.info #=> displays detector attributes in a nice printout 
+
 detector.id #=> "5893f98530c1c00d0063835b"
 detector.name #=> "My cool detector"
 detector.state #=> "trained"
@@ -69,7 +82,7 @@ detector.labels #=> ["label 1", "label 2", ...]
 detector.permission_level #=> "private"
 detector.owner #=> true
 detector.training #=> "successful"
-detector.detector_type #=> "general"
+detector.type #=> "object", "face", "facial_characteristics"
 
 # Create a detector
 detector = Matroid::Detector.create('PATH/TO/ZIP/FILE', 'My awesome detector', 'general') # uploads labels and images

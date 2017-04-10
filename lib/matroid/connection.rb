@@ -1,20 +1,19 @@
 require 'base64'
 require 'json'
-require 'restclient'
+require 'httpclient/webagent-cookie' # stops warning found here: https://github.com/nahi/httpclient/issues/252
+require 'httpclient'
 require 'date'
 
-BASE_API_URI       = 'https://www.matroid.com/api/0.1'
+BASE_API_URI       = 'https://www.matroid.com/api/0.1/'
 DEFAULT_GRANT_TYPE = 'client_credentials'
-TOKEN_RESOURCE     = '/oauth/token'
+TOKEN_RESOURCE     = 'oauth/token'
 VERBS              = %w(get post)
 
 module Matroid
 
   # @attr_reader [Token] The current stored token object
   class << self
-    attr_reader :token
-
-    @base_api_uri = BASE_API_URI
+    attr_reader :token, :base_api_uri, :client
 
     # Changes the default base api uri. This is used primarily for testing purposes.
     # @param uri [String]
@@ -31,56 +30,53 @@ module Matroid
     private
 
     def get_token(client_id, client_secret)
-      url = BASE_API_URI + TOKEN_RESOURCE
+      @base_api_uri = BASE_API_URI if @base_api_uri.nil?
+      url = @base_api_uri + TOKEN_RESOURCE
       params = auth_params(client_id, client_secret)
-      begin
-        response = RestClient.post(url, params)
-      rescue RestClient::ExceptionWithResponse => e
-        puts parse_or_show_response(e.response)
-        @token = nil
-        return false
-      end
-
-      @token = Token.new(JSON.parse(response))
+      @client = HTTPClient.new
+      response = @client.post(url, body: params)
+      return false unless response.status_code == 200
+      @token = Token.new(JSON.parse(response.body))
+      @client.base_url = @base_api_uri
+      @client.default_header = { 'Authorization' => @token.authorization_header }
     end
 
-    def send_request(verb, path, *params)
-      url = path.start_with?('http') ? path : BASE_API_URI + path
-      url_split = url.split('?')
-      url =  url_split[0]
-      query = url_split[1..-1].join
-      url = URI.escape(url)
-      url << "?#{query}" if query
+    def send_request(verb, path, params = {})
+      path_split = path.split('?')
+      path =  path_split[0]
+      query = path_split[1..-1].join
+      path = URI.escape(path)
+      path << "?#{query}" if query
 
       # refreshes token with each call
       authenticate
 
-      begin
-        case verb
-        when 'get'
-          params << { 'Authorization' => @token.authorization_header }
-          response = RestClient.get(url, *params)
-        when 'post'
-          params << {} if params.empty?
-          params << { 'Authorization' => @token.authorization_header }
-          response = RestClient.post(url, *params)
-        end
-      rescue RestClient::ExceptionWithResponse => e
-        parse_or_show_response(e)
+      case verb
+      when 'get'
+        response = @client.get(path, body: params)
+      when 'post'
+        response = @client.post(path, body: params)
       end
-      JSON.parse(response)
+
+      parse_response(response)
     end
 
-    def parse_or_show_response(err)
-      if valid_json?(err.response)
-        http_code = err.http_code
-        err_msg = JSON.pretty_generate(JSON.parse(err.response))
-        raise Error::RateLimitError.new(err_msg) if http_code == 429
-        raise Error::PaymentError.new(err_msg) if http_code == 402
-        raise Error::ServerError.new(err_msg) if http_code / 100 == 5
-        raise Error::APIError.new(err_msg)
+    def parse_response(response)
+      if valid_json?(response.body)
+        status = response.status_code
+        parsed_response = JSON.parse(response.body)
+        if status != 200
+          err_msg = JSON.pretty_generate(parsed_response)
+          raise Error::RateLimitError.new(err_msg) if status == 429
+          raise Error::InvalidQueryError.new(err_msg) if status == 422
+          raise Error::PaymentError.new(err_msg) if status == 402
+          raise Error::ServerError.new(err_msg) if status / 100 == 5
+          raise Error::APIError.new(err_msg)
+        end
+
+        parsed_response
       else
-        raise Error::APIError.new(err.response)
+        raise Error::APIError.new(response.body)
       end
     end
 
