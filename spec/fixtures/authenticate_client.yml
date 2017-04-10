@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www..matroid.com/api/0.1/oauth/token
+    uri: https://www.matroid.com/api/0.1/oauth/token
     body:
       encoding: UTF-8
       string: client_id=c7RqWJs9MopTAN0Y&client_secret=55JxPSgh395wRW1IIX1PDLDBeVlUZytI&grant_type=client_credentials

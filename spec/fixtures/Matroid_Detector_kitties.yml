@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://www..matroid.com/api/0.1/detectors/search
+    uri: https://www.matroid.com/api/0.1/detectors/search
     body:
       encoding: UTF-8
       string: ''
