@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://www..matroid.com/api/0.1/account
+    uri: https://www..matroid.com/api/0.1/detectors/search
     body:
       encoding: UTF-8
       string: ''
@@ -29,7 +29,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
-      - '166'
+      - '274'
       Connection:
       - keep-alive
       X-Powered-By:
@@ -42,12 +42,12 @@ http_interactions:
         https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
         report-uri /api/report_error
       Etag:
-      - W/"a6-eC6wEXdRFWBjmdTiMgBObg"
+      - W/"112-vNLpJCxm+GJg3Q/4uowT8Q"
       Vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
-      string: '{"account":{"credits":{"plan":"premium","daily":{"used":36860,"available":100000},"monthly":{"used":36860,"available":1000000},"held":3502,"concurrentTrainLimit":1}}}'
+      string: '[{"id":"583416bc01f5b1394b3875c5","name":"kitties-n-puppies","labels":["kitty","puppy"],"label_ids":["583416bc01f5b1394b3875c6","583416bc01f5b1394b3875c7"],"type":"object","permission_level":"open","owner":true,"state":"trained","training":{"progress":100,"accuracy":97.9}}]'
     http_version: 
   recorded_at: Mon, 10 Apr 2017 16:25:22 GMT
 recorded_with: VCR 3.0.3

@@ -1,0 +1,108 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www..matroid.com/api/0.1/oauth/token
+    body:
+      encoding: UTF-8
+      string: client_id=c7RqWJs9MopTAN0Y&client_secret=55JxPSgh395wRW1IIX1PDLDBeVlUZytI&grant_type=client_credentials
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Mon, 10 Apr 2017 16:25:22 GMT
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.10.1
+      Date:
+      - Mon, 10 Apr 2017 16:19:17 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Vary:
+      - X-HTTP-Method-Override, Accept-Encoding
+      Set-Cookie:
+      - language=en-US; Path=/
+      - this.sid=s%3Am9fcVD-9xSw17jXibz6JVQlWnCPIt81x.cRz%2FxMz23s1dFt3IJ%2Ff4FTeGKYTy0PlJ9ews%2FWlSqmQ;
+        Path=/; HttpOnly
+      X-Frame-Options:
+      - sameorigin
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Cache-Control:
+      - no-store
+      Pragma:
+      - no-cache
+    body:
+      encoding: UTF-8
+      string: '{"access_token":"521bed655e6793c9b52a450574d56835","expires_in":2164,"scope":"api_access","token_type":"Bearer"}'
+    http_version: 
+  recorded_at: Mon, 10 Apr 2017 16:25:22 GMT
+- request:
+    method: get
+    uri: https://www..matroid.com/api/0.1/detectors/search
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Mon, 10 Apr 2017 16:25:22 GMT
+      Authorization:
+      - Bearer 521bed655e6793c9b52a450574d56835
+      Cookie:
+      - language=en-US; this.sid=s%3Am9fcVD-9xSw17jXibz6JVQlWnCPIt81x.cRz%2FxMz23s1dFt3IJ%2Ff4FTeGKYTy0PlJ9ews%2FWlSqmQ
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.10.1
+      Date:
+      - Mon, 10 Apr 2017 16:19:17 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '324'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      X-Frame-Options:
+      - sameorigin
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Etag:
+      - W/"144-rEsKUXekQtpu9LDsHJmRMQ"
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '[{"id":"587ed72bb9b549417eefba41","name":"cat-64","labels":["Cat in
+        the hat","cat"],"label_ids":["587fdc21e36792cd215081e5","587ed72bb9b549417eefba42"],"type":"object","permission_level":"private","owner":true,"state":"trained","training":{"progress":100,"accuracy":81.1,"training_requested_at":"2017-01-18T21:21:04.684Z"}}]'
+    http_version: 
+  recorded_at: Mon, 10 Apr 2017 16:25:22 GMT
+recorded_with: VCR 3.0.3

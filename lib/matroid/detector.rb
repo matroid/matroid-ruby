@@ -49,7 +49,7 @@ module Matroid
     # Finds a single document based on the id
     def self.find_by_id(id, args = {})
       detector = @@instances[id]
-      is_trained =  detector.class == Detector && detector.state == 'trained'
+      is_trained =  detector.class == Detector && detector.is_trained?
       return detector if is_trained
 
       args[:id] = id
@@ -267,7 +267,7 @@ module Matroid
       @type = params['type'] if params['type']
       @training = params['training'] if params['training']
       @state = params['state'] if params['state']
-      nil
+      self
     end
 
     private

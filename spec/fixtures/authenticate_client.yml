@@ -2,62 +2,56 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.matroid.com/api/0.1/oauth/token
+    uri: https://www..matroid.com/api/0.1/oauth/token
     body:
-      encoding: US-ASCII
+      encoding: UTF-8
       string: client_id=c7RqWJs9MopTAN0Y&client_secret=55JxPSgh395wRW1IIX1PDLDBeVlUZytI&grant_type=client_credentials
     headers:
-      accept:
-      - '*/*; q=0.5, application/xml'
-      accept-encoding:
-      - gzip, deflate
-      content-length:
-      - '103'
-      content-type:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Mon, 10 Apr 2017 16:32:58 GMT
+      Content-Type:
       - application/x-www-form-urlencoded
-      user-agent:
-      - Ruby
   response:
     status:
       code: 200
       message: OK
     headers:
-      server:
+      Server:
       - nginx/1.10.1
-      date:
-      - Thu, 30 Mar 2017 07:39:13 GMT
-      content-type:
+      Date:
+      - Mon, 10 Apr 2017 16:26:54 GMT
+      Content-Type:
       - application/json
-      transfer-encoding:
+      Transfer-Encoding:
       - chunked
-      connection:
+      Connection:
       - keep-alive
-      x-powered-by:
+      X-Powered-By:
       - Express
-      vary:
+      Vary:
       - X-HTTP-Method-Override, Accept-Encoding
-      x-frame-options:
+      Set-Cookie:
+      - language=en-US; Path=/
+      - this.sid=s%3AigyQ6Yu2rYbwhZcnZq3I7XduNA0UmSZe.oVSPOcqDqnKTOrShWqI21FpWU%2BOIKlheBwqAN0RQz0c;
+        Path=/; HttpOnly
+      X-Frame-Options:
       - sameorigin
-      content-security-policy:
+      Content-Security-Policy:
       - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
         http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
         https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
         report-uri /api/report_error
-      cache-control:
+      Cache-Control:
       - no-store
-      pragma:
+      Pragma:
       - no-cache
-      set-cookie:
-      - keystone.sid=s%3AImODhFZ44lCDvF1GBuPsNpbIDOxOefmu.FJfehKNOi5to4YRS53LoMCsGrJBTN2QW4dq2zCGC0hQ;
-        Path=/; HttpOnly
-      content-encoding:
-      - gzip
     body:
-      encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAAAyWMSwqAIBBA7zJrF9PHIVt2ERl1BAlKtEUR3T2p9fvcwN5L
-        rfbYV9lgBhcn7EZ2pCNR75hMHEIMqEkMBiRQIGdORapNze8IjYLq9ywt5pzs
-        /2vad7TH9ZFFuEiB5wUffgZqcAAAAA==
-    http_version: '1.1'
-  recorded_at: Thu, 30 Mar 2017 07:44:53 GMT
+      encoding: UTF-8
+      string: '{"access_token":"521bed655e6793c9b52a450574d56835","expires_in":1708,"scope":"api_access","token_type":"Bearer"}'
+    http_version: 
+  recorded_at: Mon, 10 Apr 2017 16:32:59 GMT
 recorded_with: VCR 3.0.3
