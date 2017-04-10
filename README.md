@@ -73,7 +73,7 @@ cat_detector_id = Matroid::Detector.find(labels: 'cat', state: 'trained', publis
 
 # Get detector details
 detector.to_hash #=> Hash of all the details (or you can get them separately as below)
-detector.info #=> displays detector attributes in a nice printout 
+detector.info #=> displays detector attributes in a nice printout
 
 detector.id #=> "5893f98530c1c00d0063835b"
 detector.name #=> "My cool detector"
@@ -92,7 +92,7 @@ detector.state #=> "pending"
 detector.labels #=> ["label 1", "label 2", ...]
 detector.permission_level #=> "private"
 detector.owner #=> true
-detector.detector_type #=> "general"
+detector.type #=> "general"
 detector.train # submits the detector for training
 # you can repeatedly call detector.info to get the updates on the training
 
