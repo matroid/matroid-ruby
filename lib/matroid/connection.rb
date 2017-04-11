@@ -4,7 +4,7 @@ require 'httpclient/webagent-cookie' # stops warning found here: https://github.
 require 'httpclient'
 require 'date'
 
-BASE_API_URI       = 'https://www.matroid.com/api/0.1/'
+BASE_API_URI       = 'https://ryan.dev.matroid.com/api/0.1/'
 DEFAULT_GRANT_TYPE = 'client_credentials'
 TOKEN_RESOURCE     = 'oauth/token'
 VERBS              = %w(get post)
@@ -42,11 +42,7 @@ module Matroid
     end
 
     def send_request(verb, path, params = {})
-      path_split = path.split('?')
-      path =  path_split[0]
-      query = path_split[1..-1].join
       path = URI.escape(path)
-      path << "?#{query}" if query
 
       # refreshes token with each call
       authenticate
@@ -76,6 +72,7 @@ module Matroid
 
         parsed_response
       else
+        p response
         raise Error::APIError.new(response.body)
       end
     end
