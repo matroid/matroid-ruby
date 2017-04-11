@@ -99,18 +99,50 @@ describe Matroid::Detector do
 
   describe '#classify_image_url' do
     let(:detector) do
-      VCR.use_cassette('Matroid:Detector:kitties') do
-        Matroid::Detector.find_by_id('58548cbc012b4b7016368453')
+      VCR.use_cassette('Matroid:Detector:find_by_id:588887869a70643f1d6bd28b') do
+        Matroid::Detector.find_by_id('588887869a70643f1d6bd28b', published: true)
       end
     end
 
     it 'should classify image url' do
-      p detector
       classification = VCR.use_cassette('detector:classify_image_url') do
-        detector.classify_image_url('https://www.allaboutbirds.org/guide/PHOTO/LARGE/common_tern_donnalynn.jpg')
+        detector.classify_image_url('https://images-na.ssl-images-amazon.com/images/M/MV5BOTI3ODk1MTMyNV5BMl5BanBnXkFtZTcwNDEyNTE2Mg@@._V1_UY317_CR6,0,214,317_AL_.jpg')
       end
-      p classification
-      expect(classification) .to eq true
+      expect(classification['results']).to be_an_instance_of(Array)
+    end
+
+  end
+
+  describe '#classify_image_file' do
+    let(:detector) do
+      VCR.use_cassette('Matroid:Detector:find_by_id:588887869a70643f1d6bd28b') do
+        Matroid::Detector.find_by_id('588887869a70643f1d6bd28b', published: true)
+      end
+    end
+
+    it 'should classify image file' do
+      classification = VCR.use_cassette('detector:classify_image_file') do
+        detector.classify_image_file('/Users/ryantobin/Desktop/faces/ryan/ryan1.png')
+      end
+      expect(classification['results']).to be_an_instance_of(Array)
+    end
+  end
+
+  describe '#classify_image_files' do
+    let(:detector) do
+      VCR.use_cassette('Matroid:Detector:find_by_id:588887869a70643f1d6bd28b') do
+        Matroid::Detector.find_by_id('588887869a70643f1d6bd28b', published: true)
+      end
+    end
+
+    it 'should classify image files' do
+      classification = VCR.use_cassette('detector:classify_image_files') do
+        detector.classify_image_files([
+          '/Users/ryantobin/Desktop/faces/ryan/ryan1.png',
+          '/Users/ryantobin/Desktop/faces/ryan/ryan2.png',
+          ])
+      end
+      expect(classification['results']).to be_an_instance_of(Array)
     end
   end
 end

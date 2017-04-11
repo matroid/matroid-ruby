@@ -12,7 +12,7 @@ http_interactions:
       Accept:
       - "*/*"
       Date:
-      - Mon, 10 Apr 2017 16:36:21 GMT
+      - Tue, 11 Apr 2017 01:43:51 GMT
       Content-Type:
       - application/x-www-form-urlencoded
   response:
@@ -20,40 +20,40 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Server:
-      - nginx/1.10.1
-      Date:
-      - Mon, 10 Apr 2017 16:30:17 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      X-Powered-By:
-      - Express
-      Vary:
-      - X-HTTP-Method-Override, Accept-Encoding
-      Set-Cookie:
-      - language=en-US; Path=/
-      - this.sid=s%3AswM1TkN2UYUgjpdBmMp4n9r159MFVExN.yUaAGTwN%2FEcevxzawTbe%2BazuAyO0nh4n9F0%2FMNP2ikU;
-        Path=/; HttpOnly
-      X-Frame-Options:
-      - sameorigin
+      Cache-Control:
+      - no-store
       Content-Security-Policy:
       - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
         http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
         https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
         report-uri /api/report_error
-      Cache-Control:
-      - no-store
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
       Pragma:
       - no-cache
+      Server:
+      - nginx/1.10.1
+      Set-Cookie:
+      - language=en-US; Path=/
+      - this.sid=s%3A8ldmFjCO_yMPsKFQmWMGuj5Mm9db9qnS.hurMnyOqIqIC%2B%2BFHhMHp7hCeWpuMolePb8H7SK5KRVQ;
+        Path=/; HttpOnly
+      Vary:
+      - X-HTTP-Method-Override, Accept-Encoding
+      X-Frame-Options:
+      - sameorigin
+      X-Powered-By:
+      - Express
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
     body:
       encoding: UTF-8
-      string: '{"access_token":"521bed655e6793c9b52a450574d56835","expires_in":1505,"scope":"api_access","token_type":"Bearer"}'
-    http_version: 
-  recorded_at: Mon, 10 Apr 2017 16:36:22 GMT
+      string: '{"access_token":"b7df3e72626054b78dc6e016963d0916","expires_in":577683,"scope":"api_access","token_type":"Bearer"}'
+    http_version:
+  recorded_at: Tue, 11 Apr 2017 01:43:51 GMT
 - request:
     method: get
     uri: https://www.matroid.com/api/0.1/detectors/search
@@ -66,42 +66,43 @@ http_interactions:
       Accept:
       - "*/*"
       Date:
-      - Mon, 10 Apr 2017 16:36:22 GMT
+      - Tue, 11 Apr 2017 01:43:51 GMT
       Authorization:
-      - Bearer 521bed655e6793c9b52a450574d56835
+      - Bearer b7df3e72626054b78dc6e016963d0916
       Cookie:
-      - language=en-US; this.sid=s%3AswM1TkN2UYUgjpdBmMp4n9r159MFVExN.yUaAGTwN%2FEcevxzawTbe%2BazuAyO0nh4n9F0%2FMNP2ikU
+      - language=en-US; this.sid=s%3A8ldmFjCO_yMPsKFQmWMGuj5Mm9db9qnS.hurMnyOqIqIC%2B%2BFHhMHp7hCeWpuMolePb8H7SK5KRVQ
   response:
     status:
       code: 200
       message: OK
     headers:
-      Server:
-      - nginx/1.10.1
-      Date:
-      - Mon, 10 Apr 2017 16:30:17 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Content-Length:
-      - '274'
-      Connection:
-      - keep-alive
-      X-Powered-By:
-      - Express
-      X-Frame-Options:
-      - sameorigin
       Content-Security-Policy:
       - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
         http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
         https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
         report-uri /api/report_error
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
       Etag:
-      - W/"112-vNLpJCxm+GJg3Q/4uowT8Q"
+      - W/"125-Oi9dhFtrerxIT9KHNJnGvA"
+      Server:
+      - nginx/1.10.1
       Vary:
       - Accept-Encoding
+      X-Frame-Options:
+      - sameorigin
+      X-Powered-By:
+      - Express
+      Content-Length:
+      - '293'
+      Connection:
+      - keep-alive
     body:
       encoding: UTF-8
-      string: '[{"id":"583416bc01f5b1394b3875c5","name":"kitties-n-puppies","labels":["kitty","puppy"],"label_ids":["583416bc01f5b1394b3875c6","583416bc01f5b1394b3875c7"],"type":"object","permission_level":"open","owner":true,"state":"trained","training":{"progress":100,"accuracy":97.9}}]'
-    http_version: 
-  recorded_at: Mon, 10 Apr 2017 16:36:22 GMT
+      string: '[{"id":"588887869a70643f1d6bd28b","name":"Ryan Reynolds","labels":["Ryan
+        Reynolds"],"label_ids":["5888882e9a70643f1d6bd6fe"],"type":"face","permission_level":"open","owner":false,"state":"trained","training":{"progress":100,"accuracy":84.8,"training_requested_at":"2017-01-25T03:12:54.000Z"}}]'
+    http_version:
+  recorded_at: Tue, 11 Apr 2017 01:43:51 GMT
 recorded_with: VCR 3.0.3

@@ -53,7 +53,7 @@ module Matroid
       return detector if is_trained
 
       args[:id] = id
-      find_one(id: id)
+      find_one(args)
     end
 
     SEARCH_PARAMETERS.each do |param|
@@ -237,7 +237,8 @@ module Matroid
       url = "#{Matroid.base_api_uri}detectors/#{@id}/classify_image"
 
       client = HTTPClient.new
-      client.post(url, body: files, header: {'Authorization' => Matroid.token.authorization_header}).body
+      response = client.post(url, body: files, header: {'Authorization' => Matroid.token.authorization_header})
+      Matroid.parse_response(response)
       # Matroid.post("detectors/#{@id}/classify_image", files) # responds with 'request entity too large' for some reason
     end
 

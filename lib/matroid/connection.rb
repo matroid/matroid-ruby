@@ -4,7 +4,7 @@ require 'httpclient/webagent-cookie' # stops warning found here: https://github.
 require 'httpclient'
 require 'date'
 
-BASE_API_URI       = 'https://ryan.dev.matroid.com/api/0.1/'
+BASE_API_URI       = 'https://www.matroid.com/api/0.1/'
 DEFAULT_GRANT_TYPE = 'client_credentials'
 TOKEN_RESOURCE     = 'oauth/token'
 VERBS              = %w(get post)
@@ -24,6 +24,26 @@ module Matroid
     VERBS.each do |verb|
       define_method verb do |endpoint, *params|
         send_request(verb, endpoint, *params)
+      end
+    end
+
+    def parse_response(response)
+      if valid_json?(response.body)
+        status = response.status_code
+        parsed_response = JSON.parse(response.body)
+        if status != 200
+          err_msg = JSON.pretty_generate(parsed_response)
+          raise Error::RateLimitError.new(err_msg) if status == 429
+          raise Error::InvalidQueryError.new(err_msg) if status == 422
+          raise Error::PaymentError.new(err_msg) if status == 402
+          raise Error::ServerError.new(err_msg) if status / 100 == 5
+          raise Error::APIError.new(err_msg)
+        end
+
+        parsed_response
+      else
+        p response
+        raise Error::APIError.new(response.body)
       end
     end
 
@@ -55,26 +75,6 @@ module Matroid
       end
 
       parse_response(response)
-    end
-
-    def parse_response(response)
-      if valid_json?(response.body)
-        status = response.status_code
-        parsed_response = JSON.parse(response.body)
-        if status != 200
-          err_msg = JSON.pretty_generate(parsed_response)
-          raise Error::RateLimitError.new(err_msg) if status == 429
-          raise Error::InvalidQueryError.new(err_msg) if status == 422
-          raise Error::PaymentError.new(err_msg) if status == 402
-          raise Error::ServerError.new(err_msg) if status / 100 == 5
-          raise Error::APIError.new(err_msg)
-        end
-
-        parsed_response
-      else
-        p response
-        raise Error::APIError.new(response.body)
-      end
     end
 
     def valid_json?(json)

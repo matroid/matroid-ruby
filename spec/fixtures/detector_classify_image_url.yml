@@ -1,0 +1,56 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.matroid.com/api/0.1/detectors/588887869a70643f1d6bd28b/classify_image
+    body:
+      encoding: UTF-8
+      string: url=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FM%2FMV5BOTI3ODk1MTMyNV5BMl5BanBnXkFtZTcwNDEyNTE2Mg%40%40._V1_UY317_CR6%2C0%2C214%2C317_AL_.jpg
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
+      Authorization:
+      - Bearer b7df3e72626054b78dc6e016963d0916
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Cookie:
+      - language=en-US; this.sid=s%3A8ldmFjCO_yMPsKFQmWMGuj5Mm9db9qnS.hurMnyOqIqIC%2B%2BFHhMHp7hCeWpuMolePb8H7SK5KRVQ
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 11 Apr 2017 01:43:52 GMT
+      Etag:
+      - W/"147-qYoWI7o8JKMs0EDSn5hGAA"
+      Server:
+      - nginx/1.10.1
+      Vary:
+      - X-HTTP-Method-Override, Accept-Encoding
+      X-Frame-Options:
+      - sameorigin
+      X-Powered-By:
+      - Express
+      Content-Length:
+      - '327'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"results":[{"file":{"name":"MV5BOTI3ODk1MTMyNV5BMl5BanBnXkFtZTcwNDEyNTE2Mg@@._V1_UY317_CR6,0,214,317_AL_.jpeg"},"predictions":[{"bbox":{"left":0.1588785046728972,"top":0.22712933753943218,"width":0.5327102803738317,"height":0.5236593059936908,"aspectRatio":0.6750788643533123},"labels":{"Ryan
+        Reynolds":0.968485951423645}}]}]}'
+    http_version: 
+  recorded_at: Tue, 11 Apr 2017 01:43:52 GMT
+recorded_with: VCR 3.0.3

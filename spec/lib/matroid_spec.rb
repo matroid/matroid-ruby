@@ -2,8 +2,8 @@ describe Matroid do
 
   describe 'Matroid#account_info' do
     # Keys generated specifically for the tests. Should be removed in the future
-    let(:client_id) { 'c7RqWJs9MopTAN0Y' }
-    let(:client_secret) { '55JxPSgh395wRW1IIX1PDLDBeVlUZytI' }
+    let(:client_id) { '0000000000000000' }
+    let(:client_secret) { '00000000000000000000000000000000' }
 
     before do
       VCR.use_cassette('authenticate:client') do
@@ -23,7 +23,7 @@ describe Matroid do
       daily = credits['daily']
       monthly = credits['monthly']
 
-      expect(credits['plan']).to                  eq('premium')
+      expect(credits['plan']).to                  eq('free')
       expect(credits['concurrentTrainLimit']).to  eq(1)
     end
   end

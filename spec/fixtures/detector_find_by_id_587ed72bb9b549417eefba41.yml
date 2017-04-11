@@ -5,7 +5,7 @@ http_interactions:
     uri: https://www.matroid.com/api/0.1/oauth/token
     body:
       encoding: UTF-8
-      string: client_id=c7RqWJs9MopTAN0Y&client_secret=55JxPSgh395wRW1IIX1PDLDBeVlUZytI&grant_type=client_credentials
+      string: client_id=0000000000000000&client_secret=00000000000000000000000000000000&grant_type=client_credentials
     headers:
       User-Agent:
       - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
