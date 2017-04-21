@@ -38,6 +38,7 @@ Also, you may call `Matroid.authenticate(MATROID_CLIENT_ID, MATROID_CLIENT_SECRE
 any other methods and the token will be stored in the instance and refreshed as needed.
 
 # Example API usage
+### Authentication
 ```ruby
 require 'matroid'
 
@@ -48,7 +49,10 @@ Matroid.authenticate(MATROID_CLIENT_ID, MATROID_CLIENT_SECRET)
 
 # Check user account info like Matroid Credits balance
 Matroid.account_info
+```
 
+### Query for Detectors
+```ruby
 # Get detector by id
 detector = Matroid::Detector.find_by_id('5893f98530c1c00d0063835b')
 
@@ -68,7 +72,10 @@ cat_detector_id = Matroid::Detector.find(labels: 'cat', state: 'trained', publis
 #  .find_one(Hash)
 #  .find_by_<attribute>(String)
 #  .find_one_by_<attribute>(String)
+```
 
+### Use Detector class methods
+```ruby
 # Get detector details
 detector.to_hash #=> Hash of all the details (or you can get them separately as below)
 detector.info #=> displays detector attributes in a nice printout
