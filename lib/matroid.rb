@@ -20,7 +20,8 @@ module Matroid
       return true unless @token.nil? || @token.expired?
       if client_id && client_secret
         err_msg = 'problem using environment variables "MATROID_CLIENT_ID" and "MATROID_CLIENT_SECRET"'
-        raise Error::AuthorizationError.new(err_msg) if get_token(client_id, client_secret).nil?
+        new_token = get_token(client_id, client_secret)
+        raise Error::AuthorizationError.new(err_msg) if new_token.nil?
         @client_id, @client_secret = client_id, client_secret
       elsif (@client_id.nil? || @client_secret.nil?) && !environment_variables?
         err_msg = '"MATROID_CLIENT_ID" and "MATROID_CLIENT_SECRET" not found in environment'
