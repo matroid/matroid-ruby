@@ -1,0 +1,108 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.matroid.com/api/0.1/oauth/token
+    body:
+      encoding: UTF-8
+      string: client_id=0000000000000000&client_secret=00000000000000000000000000000000&grant_type=client_credentials
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-store
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.10.1
+      Set-Cookie:
+      - language=en-US; Path=/
+      - this.sid=s%3A8ldmFjCO_yMPsKFQmWMGuj5Mm9db9qnS.hurMnyOqIqIC%2B%2BFHhMHp7hCeWpuMolePb8H7SK5KRVQ;
+        Path=/; HttpOnly
+      Vary:
+      - X-HTTP-Method-Override, Accept-Encoding
+      X-Frame-Options:
+      - sameorigin
+      X-Powered-By:
+      - Express
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"access_token":"b7df3e72626054b78dc6e016963d0916","expires_in":577683,"scope":"api_access","token_type":"Bearer"}'
+    http_version:
+  recorded_at: Tue, 11 Apr 2017 01:43:51 GMT
+- request:
+    method: get
+    uri: https://www.matroid.com/api/0.1/detectors/search
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
+      Authorization:
+      - Bearer b7df3e72626054b78dc6e016963d0916
+      Cookie:
+      - language=en-US; this.sid=s%3A8ldmFjCO_yMPsKFQmWMGuj5Mm9db9qnS.hurMnyOqIqIC%2B%2BFHhMHp7hCeWpuMolePb8H7SK5KRVQ
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 11 Apr 2017 01:43:51 GMT
+      Etag:
+      - W/"125-Oi9dhFtrerxIT9KHNJnGvA"
+      Server:
+      - nginx/1.10.1
+      Vary:
+      - Accept-Encoding
+      X-Frame-Options:
+      - sameorigin
+      X-Powered-By:
+      - Express
+      Content-Length:
+      - '293'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '[{"id":"588887869a70643f1d6bd28b","name":"Ryan Reynolds","labels":["Ryan
+        Reynolds"],"label_ids":["5888882e9a70643f1d6bd6fe"],"type":"face","permission_level":"open","owner":false,"state":"trained","training":{"progress":100,"accuracy":84.8,"training_requested_at":"2017-01-25T03:12:54.000Z"}}]'
+    http_version:
+  recorded_at: Tue, 11 Apr 2017 01:43:51 GMT
+recorded_with: VCR 3.0.3

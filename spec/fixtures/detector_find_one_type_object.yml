@@ -1,0 +1,55 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://www.matroid.com/api/0.1/detectors/search
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Mon, 10 Apr 2017 16:34:33 GMT
+      Authorization:
+      - Bearer 521bed655e6793c9b52a450574d56835
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.10.1
+      Date:
+      - Mon, 10 Apr 2017 16:28:29 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '274'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Set-Cookie:
+      - language=en-US; Path=/
+      - this.sid=s%3A3fCi3941Un8Na_Ssd69bb1IGrhd5Tqy6.R3zvPgStF9Ro7ACi7L%2B2kDPdy%2FVguF%2B3X0R2guIViIw;
+        Path=/; HttpOnly
+      X-Frame-Options:
+      - sameorigin
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Etag:
+      - W/"112-vNLpJCxm+GJg3Q/4uowT8Q"
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '[{"id":"583416bc01f5b1394b3875c5","name":"kitties-n-puppies","labels":["kitty","puppy"],"label_ids":["583416bc01f5b1394b3875c6","583416bc01f5b1394b3875c7"],"type":"object","permission_level":"open","owner":true,"state":"trained","training":{"progress":100,"accuracy":97.9}}]'
+    http_version: 
+  recorded_at: Mon, 10 Apr 2017 16:34:34 GMT
+recorded_with: VCR 3.0.3

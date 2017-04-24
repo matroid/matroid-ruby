@@ -1,0 +1,55 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://www.matroid.com/api/0.1/account
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.3, ruby 2.3.1 (2016-04-26))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 11 Apr 2017 02:12:23 GMT
+      Authorization:
+      - Bearer b7df3e72626054b78dc6e016963d0916
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Security-Policy:
+      - script-src 'self' https://cdn.datatables.net https://cdnjs.cloudflare.com
+        http://cdn.segment.com https://www.google-analytics.com http://www.google-analytics.com
+        https://www.youtube.com https://s.ytimg.com https://checkout.stripe.com https://code.ionicframework.com;
+        report-uri /api/report_error
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 11 Apr 2017 02:12:23 GMT
+      Etag:
+      - W/"95-50IDV95bwanWTqiFwy2zQg"
+      Server:
+      - nginx/1.10.1
+      Set-Cookie:
+      - language=en-US; Path=/
+      - this.sid=s%3A3j7XSiEbTJNrJqdJxZcPJDJUrg8pKwbI.dQCXaYdW99xjB2zvQD3ffXgZKru9wY5ZS7ICJYqcios;
+        Path=/; HttpOnly
+      Vary:
+      - Accept-Encoding
+      X-Frame-Options:
+      - sameorigin
+      X-Powered-By:
+      - Express
+      Content-Length:
+      - '149'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"account":{"credits":{"plan":"free","daily":{"used":26,"available":1000},"monthly":{"used":50,"available":1000},"held":1,"concurrentTrainLimit":1}}}'
+    http_version: 
+  recorded_at: Tue, 11 Apr 2017 02:12:23 GMT
+recorded_with: VCR 3.0.3
