@@ -73,7 +73,7 @@ module Matroid
     #  List of detectors that have been returned by search requests as hashes or Detector instances.
     # @param type [String] Indicate how you want the response
     # @return [Array<Hash, Detector>]
-    def self.list(format = 'instance')
+    def self.list(type = 'instance')
       case type
       when 'hash'
         @@ids.map{|id| find_by_id(id).to_hash }
