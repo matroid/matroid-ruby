@@ -72,6 +72,9 @@ cat_detector_id = Matroid::Detector.find(labels: 'cat', state: 'trained', publis
 #  .find_one(Hash)
 #  .find_by_<attribute>(String)
 #  .find_one_by_<attribute>(String)
+
+# View cached detectors from previous searches
+all_detectors = Matroid::Detector.cached
 ```
 
 ### Use Detector class methods
