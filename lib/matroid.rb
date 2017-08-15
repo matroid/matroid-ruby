@@ -146,7 +146,7 @@ module Matroid
     def register_stream(stream_url, stream_name)
       register_err = "Must include a url and name for stream"
       raise Error::InvalidQueryError.new(register_err) unless stream_url && stream_name
-      Matroid.post("feeds", name: stream_name, url: stream_url)
+      Matroid.post("streams", name: stream_name, url: stream_url)
     end
 
 
