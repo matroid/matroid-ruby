@@ -270,7 +270,7 @@ module Matroid
         thresholds: thresholds.to_json
       }
       params = params.merge(options)
-      Matroid.post("streams/#{stream_id}/monitor/#{@id}", params)
+      Matroid.post("feeds/#{stream_id}/monitor/#{@id}", params)
     end
 
     def update_params(params)
