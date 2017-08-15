@@ -4,7 +4,7 @@ require 'httpclient/webagent-cookie' # stops warning found here: https://github.
 require 'httpclient'
 require 'date'
 
-BASE_API_URI       = 'https://www.matroid.com/api/0.1/'
+BASE_API_URI       = 'https://www.matroid.com/api/v1/'
 DEFAULT_GRANT_TYPE = 'client_credentials'
 TOKEN_RESOURCE     = 'oauth/token'
 VERBS              = %w(get post)

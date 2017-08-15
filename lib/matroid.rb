@@ -78,5 +78,16 @@ module Matroid
       get("videos/#{video_id}", *args)
     end
 
+    # Registers a new stream on Matroid
+    # @param stream_url [String] the url for the stream
+    # @param stream_name [String] the name of the stream
+    # @return Hash containing the id of the stream { "stream_id" => "123" }
+    def register_stream(stream_url, stream_name)
+      register_err = "Must include a url and name for stream"
+      raise Error::InvalidQueryError.new(register_err) unless stream_url && stream_name
+      Matroid.post("feeds", name: stream_name, url: stream_url)
+    end
+
+
   end
 end

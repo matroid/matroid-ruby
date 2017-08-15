@@ -258,6 +258,21 @@ module Matroid
       classify('video', file: File.new(file_path, 'rb'))
     end
 
+    # Monitor an existing stream on Matroid with your detector
+    # @param stream_id [String] the id for the stream to monitor with the detector
+    # @param thresholds [Hash] contains the keys for each label and the score cutoff for a notification. Example: { cat: 0.6, dog: 0.9 }
+    # @param options [Hash] contains startTime, endTime [ISO strings], and endpoint [String]. The HTTP endpoint is called whenever there is a detection
+    # @return Hash containing the stream_id and monitoring_id
+    def monitor_stream(stream_id, thresholds, options = {})
+      monitor_err = "Must include stream id"
+      raise Error::InvalidQueryError.new(monitor_err) unless stream_id
+      params = {
+        thresholds: thresholds.to_json
+      }
+      params = params.merge(options)
+      Matroid.post("feeds/#{stream_id}/monitor/#{@id}", params)
+    end
+
     def update_params(params)
       @id = params['id'] if params['id']
       @name = params['name'] if params['name']
